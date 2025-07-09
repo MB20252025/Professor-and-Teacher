@@ -1,0 +1,2041 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher And Student Roleplay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .game-container {
+            background-color: rgba(10, 15, 30, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 800px;
+            min-height: 600px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #4a4a8a;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #4a4a8a;
+        }
+        
+        .header h1 {
+            color: #ff6b9c;
+            font-size: 28px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(255, 107, 156, 0.4);
+        }
+        
+        .header p {
+            color: #a0a0c0;
+            font-size: 16px;
+        }
+        
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(20, 25, 45, 0.6);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #3a3a6a;
+            min-height: 400px;
+            position: relative;
+        }
+        
+        .message {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 85%;
+            animation: fadeIn 0.4s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            animation-fill-mode: forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .professor {
+            align-self: flex-start;
+            background: linear-gradient(135deg, #2d2d5a 0%, #3a3a6a 100%);
+            border: 1px solid #5a5a9a;
+            color: #e6e6ff;
+        }
+        
+        .you {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #5a2d5a 0%, #7a3a7a 100%);
+            border: 1px solid #9a5a9a;
+            color: #ffe6ff;
+        }
+        
+        .moaner {
+            align-self: flex-start;
+            background: linear-gradient(135deg, #2d2d5a 0%, #3a3a6a 100%);
+            border: 1px solid #5a5a9a;
+            color: #e6e6ff;
+        }
+        
+        .narrative {
+            align-self: center;
+            background: rgba(40, 40, 70, 0.7);
+            border: 1px dashed #6a6aaa;
+            font-style: italic;
+            color: #c0c0ff;
+            max-width: 95%;
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .task {
+            background: linear-gradient(135deg, #3a2d5a 0%, #4a3a7a 100%);
+            border: 1px solid #7a5a9a;
+            color: #e6d6ff;
+            position: relative;
+            padding: 15px 15px 15px 50px;
+        }
+        
+        .task::before {
+            content: "⚡";
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            font-size: 24px;
+        }
+        
+        .question {
+            background: linear-gradient(135deg, #5a3a2d 0%, #7a4a3a 100%);
+            border: 1px solid #9a7a5a;
+            color: #ffe6d6;
+        }
+        
+        .popup {
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            text-align: center;
+            margin: 10px auto;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 90%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+        
+        .choices {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .choice-btn {
+            background: linear-gradient(135deg, #4a3a7a 0%, #5a4a9a 100%);
+            color: #e6e6ff;
+            border: none;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            border: 1px solid #7a6aaa;
+        }
+        
+        .choice-btn:hover {
+            background: linear-gradient(135deg, #5a4a9a 0%, #6a5aaa 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .choice-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .continue-btn {
+            background: linear-gradient(135deg, #ff6b9c 0%, #ff4d8d 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(255, 107, 156, 0.3);
+            align-self: center;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .continue-btn:hover {
+            background: linear-gradient(135deg, #ff4d8d 0%, #ff2d7d 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 107, 156, 0.4);
+        }
+        
+        .continue-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(90, 90, 150, 0.3);
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b9c 0%, #ff4d8d 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .email {
+            background: rgba(30, 30, 60, 0.7);
+            border: 1px solid #5a5a9a;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            line-height: 1.6;
+            margin: 15px 0;
+            white-space: pre-wrap;
+        }
+        
+        .character {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            font-size: 18px;
+        }
+        
+        .professor-name {
+            color: #6b9cff;
+        }
+        
+        .you-name {
+            color: #ff9c6b;
+        }
+        
+        .moaner-name {
+            color: #6b9cff;
+        }
+        
+        .prep-list {
+            padding-left: 25px;
+            margin: 15px 0;
+        }
+        
+        .prep-list li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            background: rgba(30, 30, 60, 0.7);
+            border-radius: 20px;
+            width: fit-content;
+            margin: 5px 0;
+            align-self: flex-start;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #a0a0c0;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        .self-thought {
+            background: linear-gradient(135deg, #3a5a2d 0%, #4a7a3a 100%);
+            border: 1px solid #5a9a5a;
+            color: #e6ffd6;
+            font-style: italic;
+        }
+        
+        .notification {
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px auto;
+            max-width: 90%;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #4a3a7a 0%, #5a4a9a 100%);
+            color: #e6e6ff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #7a6aaa;
+        }
+        
+        .nav-btn:hover {
+            background: linear-gradient(135deg, #5a4a9a 0%, #6a5aaa 100%);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .choice-btn, .continue-btn, .nav-btn {
+                padding: 12px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>Teacher And Student Roleplay</h1>
+            <p>Play as Rose Swallows in this interactive story</p>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        <div class="content-area" id="content">
+            <!-- Content will be dynamically generated here -->
+        </div>
+        
+        <div id="choices-container" class="choices"></div>
+        
+        <div class="nav-buttons">
+            <button id="back-btn" class="nav-btn">Back</button>
+            <button id="continue-btn" class="continue-btn">Continue</button>
+            <button id="next-btn" class="nav-btn">Next</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        const gameState = {
+            currentStep: 0,
+            steps: [],
+            progress: 0,
+            timeoutId: null
+        };
+        
+        // Dare options
+        const dareOptions = [
+            "Storytelling: Make up a wild, dramatic backstory about a random person at the bar. The more outrageous, the better",
+            "Compliment the bartender — with a flirty twist",
+            "Speak in an accent for the next 15 minutes",
+            "Pretend to be strangers and try to pick each other up for 30 minutes.",
+            "Act jealous of the next person who looks at or talks to your partner",
+            "Give the cold shoulder — ignore your partner completely for 10 minutes.",
+            "Steal a sip of your partner’s drink without being noticed — do it within 30 minutes.",
+            "Say Professor or Gorgeous at the end of every sentence for the next 10 minutes.",
+            "Take off your underwear and whisper where you need to leave them",
+            "Kiss with tongues for 10 seconds somewhere semi-private.",
+            "Rub their crotch subtly under the table or against them in passing.",
+            "Whisper something filthy in their ear — then gently nibble their earlobe.",
+            "Pinch their nipples discreetly to make them hard.",
+            "Curtsy or bow every time you see the other person — for the next hour.",
+            "Show your orgasm face — without laughing.",
+            "Trace a secret message on their back with your finger. If they guess it, they get a reward. If they don't... you do.",
+            "Run your fingers through their hair in a slow, deliberate motion.",
+            "Describe yourself seductively — like you're trying to win a modelling contract.",
+            "Touch yourself — just for a few seconds, subtly, while keeping eye contact.",
+            "Keep your legs open for the rest of the night — no matter where you sit.",
+            "Flash your ass within 30 minutes — even if only briefly.",
+            "Taste your partner’s juices from their finger.",
+            "Slip an ice cube into your crotch and keep it there for 60 seconds.",
+            "Rub your foot up their leg under the table — keep a straight face.",
+            "Squeeze their ass firmly while standing close, like nothing happened.",
+            "Flash your cock or pussy — just a glimpse, just once, in private.",
+            "Spit in their drink — seductively, without saying a word.",
+            "Send a voice note from across the room describing what you want to do to them.",
+            "Take a close-up photo of a body part and make them guess which part it is.",
+            "Write “I want to fuck you” on a napkin and hide it in their pocket.",
+            "Lick something (salt, sugar, lip gloss) off their neck in one slow move.",
+            "Pretend to be turned on by something random — like the way they sip their drink.",
+            "Lick your straw slowly, locking eyes with them the whole time.",
+            "Take a nude in the toilet and send it to your partner.",
+            "Leave your underwear somewhere public (but discreet) within the next 2 hours.",
+            "Order a drink in an accent",
+            "Skip in a public place for 10 seconds within 30mins",
+            "Speak only in song lyrics for the next 5 mins",
+            "Keep your eyes closed for 1 minute",
+            "Handing over power ( let each other order the next drink)",
+            "Give partner a massage for 5 minutes ",
+            "Say yes to everything for the next 10 minutes",
+            "Kiss your favourite part of my body",
+            "Whisper something dirty in my ear",
+            "Down your drink",
+            "Pretend to be a mine, stuck in a boxfor 30 seconds",
+            "Find something Blue",
+            "Take a shot without using your hands",
+            "Wear a cock ring for 30mins",
+            "Wear a but plug for 30mins",
+        ];
+        
+        // Game steps
+        const gameSteps = [
+            {
+                type: "narrative",
+                content: "Rose is relaxing at her flat, watching the latest episode of Gavin and Stacey. She hears her phone buzz, its a text from her best friend."
+            },
+            {
+                type: "dialogue",
+                speaker: "Moaner",
+                content: "Hey girl! Hows it going? So that blind date I had last night, he stayed over!"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Hey babe! Good ta, hope.you are to! OMFG!! How was it then? Did you try that trick I showed you?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Moaner",
+                content: "Im living on cloud 9 haha. Wasn't what I was expecting, he made me cum twice, already have our next date booked. And yes I tried your trick, he splashed it all over my face, tasted amazing thank you!"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "You dirty little slut!"
+            },
+            {
+                type: "dialogue",
+                speaker: "Moaner",
+                content: "I know, lucky me ey!"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Well, I'm still working my magic on the professor! But nothing seems to be working!!"
+            },
+            {
+                type: "dialogue",
+                speaker: "Moaner",
+                content: "Hang on in there girl! Keep flirting, keep being your slutty self and eventually you'll have him between your legs!"
+            },
+            {
+                type: "narrative",
+                content: "You received an email from your Professor."
+            },
+            {
+                type: "email",
+                content: `Hi Miss Swallow,
+
+Unfortunatley your performance hasn't been great over the last few weeks. You need to score at least 4 out of 6 in the exam. If you fail, you will receive an after school detention.
+
+Hope you've been revising this week.
+
+Cheers
+Professor Cumsalot`
+            },
+            {
+                type: "narrative",
+                content: "You stare at the email, your heart sinking. You had been hoping to impress the Professor, but your nerves got the better of you during the exam. You had always had a mad crush on him, his charismatic presence and sharp intellect drawing you in. And ofcourse, watching his buldge in his tight trousers move around the class room. The thought of disappointing him stung, but the prospect of spending time with him, even under these circumstances, sent a thrill through you.."
+            },
+            {
+                type: "task",
+                content: "Concentrate! You need to impress your professor!"
+            },
+            {
+                type: "question",
+                content: "Exam, Q1: In Lady Chatterley's Lover, what does the gamekeeper's cottage symbolize for Lady Chatterley?",
+                choices: [
+                    { text: "A) A place of escape from her mundane life.", popup: "Wrong" },
+                    { text: "B) A sanctuary where she can explore her true desires.", popup: "Wrong"}
+                ]
+            },
+            {
+                type: "question",
+                content: "Exam, Q2: What technique does E.L. James use to build tension in the BDSM scenes of Fifty Shades of Grey",
+                choices: [
+                    { text: "A) \"Prolonged descriptions of the characters' internal thoughts.\"", popup: "Wrong" },
+                    { text: "B) \"Short, staccato sentences that mimic the characters' heightened states.\"", popup: "Wrong" }
+                ]
+            },
+            {
+                type: "question",
+                content: "Exam Q3: What role does the red room play in The Story of O beyond its erotic connotations?",
+                choices: [
+                    { text: "A) \"It serves as a metaphor for the character's psychological journey..\"", popup: "Wrong." },
+                    { text: "B) \"It represents the characters' transition into a new phase of understanding..\"", popup: "Wrong." }
+                ]
+            },
+            {
+                type: "question",
+                content: "Exam Q4: How do erotic dreams function in Beloved?",
+                choices: [
+                    { text: "A) \"As a means of processing trauma.\"", popup: "Wrong" },
+                    { text: "B) \"As a form of escape from reality.\"", popup: "Wrong." }
+                ]
+            },
+            {
+                type: "question",
+                content: "Exam Q5: What does the eroticism in The Satanic Verses represent",
+                choices: [
+                    { text: "A) \"A clash between religious and secular values.\"", popup: "Wrong" },
+                    { text: "B) \"A exploration of cultural identity.\"", popup: "Wrong" }
+                ]
+            },
+            {
+                type: "question",
+                content: "Exam Q6: When reading a forbidden chapter, you should?",
+                choices: [
+                    { text: "A) \"Turn the page quickly.\"", popup: "Wrong." },
+                    { text: "B) \"Re-read every line slowly.\"", popup: "Wrong" }
+                ]
+            },
+            {
+                type: "task",
+                content: "You've failed the exam. Now prepare yourself for your after school detention. Dress to impress. 1-on-1 with the Professor, I want to ride his face!"
+            },
+            {
+                type: "self-thought",
+                content: "Self Thought: Did I just fail on purpose, so I get to stalk my favourite daddy...I mean professor??"
+
+            },
+            {
+                type: "prep",
+                content: `
+• Put on Makeup: Subtle eyeshadow to enhance her eye color and a touch of mascara to make her lashes stand out. A soft pink lip gloss completes the look, giving her lips a glossy, kissable finish.
+• Do Hair: Loose waves, letting it fall over her shoulders in a way that frames her face and adds to her overall seductive appearance. She ensures a few strands fall across her forehead,
+• Perfume: Apply a light, sensual perfume that will make a lasting impression without being overpowering.
+• Choose Outfit: She chooses a skirt or dress that is slightly shorter than regulation, knowing it will draw attention and comply with Professor's unspoken preferences.
+• Wear a thong, just in case!
+• Accessories: Pens and Paper.`
+            },
+            {
+                type: "narrative",
+                content: "Now your ready! Go to his office. Knock on the door and go in."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Hi"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Hi Sir"
+            },
+            {
+                type: "task",
+                content: "Task: Ask him if he thinks your outfit is appropriate for a student."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "It'll be the usual routine tonight Rose.."
+            },
+            {
+                type: "task",
+                content: "Task: Go sit down. Get out your pens. Now start writing lines: I felt his breath on my neck, his hands exploring the contours of my body, and I knew I was his for the taking. Write this 10 times"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Finished Sir"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Good girl. Now, back to basics, stand in that corner and face the wall."
+            },
+            {
+                type: "task",
+                content: "Task: Go and face the corner for 1min"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Good girl! Now read 3 paragraphs of ths book. Take your time and be in the moment when you read. Feel the moment."
+            },
+            {
+                type: "question",
+                content: "Sit on the chair or sit on his lap",
+                choices: [
+                    { text: "A) A Chair", popup: "So Vanilla, take more risks with him" },
+                    { text: "B) His Lap", popup: "Rub up against his cock subtly!" }
+                ]
+            },
+            {
+                type: "task",
+                content: "Task: Read 3 paragraphs from his book."
+            },
+            {
+                type: "task",
+                content: "Task: Read aloud: As Ana lay on the bed, her body already throbbing with anticipation, Christian's hands began to explore every curve and crevice. His touch was both gentle and demanding, knowing exactly how to make her body sing. He traced a path down her stomach, his fingers dipping into her navel before continuing lower, teasing the edge of her lace thong. Ana arched her back, a soft moan escaping her lips, her body begging for more. Christian's mouth followed the path his hands had taken, his tongue hot and wet against her skin. He hooked his fingers into the waistband of her thong, slowly pulling it down, his eyes never leaving hers. As he exposed her fully, he let out a low growl of approval. You're so fucking wet for me, aren't you? he murmured, his fingers finding her slick folds. Ana nodded, her breath coming in short gasps as he began to stroke her, his touch expert and relentless.  I need to taste you, he said, his voice thick with desire..."
+            },
+            {
+                type: "task",
+                content: "Task: Move your hips backwards and forwards as you read the last chapter."
+            },
+            {
+                type: "task",
+                content: "Task: Read outloud:...Christian's head dipped between her thighs, his tongue finding her most sensitive spot. He licked and sucked, his movements deliberate and intense, sending waves of pleasure crashing through her body. Ana's hands gripped the sheets, her hips bucking against his mouth as he brought her closer and closer to the edge. Come for me, Ana, he commanded, his voice a low rumble against her skin. Let me feel you come undone. And with a final flick of his tongue, he sent her spiraling over the edge, her body convulsing with the force of her release..."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Goooood girl, you did that quick."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "I only want to impress you sir."
+            },
+            {
+                type: "self-thought",
+                content: "Self Thought: And suck his cock!"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Your a quick learner"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Again sir, I only want to impress you."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Yet you didn't do any revision for your exam Rose. You need to try harder! Its almost like you want to be in detention."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "I know, I know, Im hopless arent I?."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Ofcourse your not Rose. Your beautiful and intelegent. You just need to focus"
+            },
+            {
+                type: "task",
+                content: "Task: Whilst hes talking to you, play with your hair"
+            },
+            {
+                type: "dialogue",
+                speaker: "Swallows",
+                content: "So… is it totally inappropriate if I say you’re the only reason I actually look forward to Thursday lectures?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "I’m not sure whether to be flattered or concerned."
+            },
+            {
+                type: "task",
+                content: "Task: Ask the Professor to the pub. Click continue to see his response."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "What do you say?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "The pub? That sounds suspiciously like crossing a line."
+            },
+            {
+                type: "dialogue",
+                speaker: "Swallows",
+                content: "We’re both adults… and I hear I’m very persuasive over a pint. Its the weekend tomorrow, treat yourself"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "After the week I've had...Sure why not."
+            },
+            {
+                type: "dialogue",
+                speaker: "Swallows",
+                content: "How about we make a deal? You pretend not to notice how distracted I am in class. And I'll pretend this invite to the pub is purely academic."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Deal."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Sir can I ask you a question quick before we go?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Ofcourse, what is it?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Do you ever think of me when you at home, alone?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Umm...Thats innapropriate."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "...but yes, more often than you'd think!"
+            },
+            {
+                type: "self-thought",
+                content: "Self Thought: Is that him admitting hes masturbated over me?"
+            },
+            {
+                type: "narrative",
+                content: " After your discipline from the professor, you've been able to convince him to go to the pub."
+            },
+            {
+                type: "narrative",
+                content: "Yellow!! Go to the pub together. As soon as you sit down, your in character."
+            },
+            {
+                type: "narrative",
+                content: `Topics for discussion:
+• Studying and Distractions
+• Flirt with one another
+• Funny teaching or studying stories
+• Cheeky lesson at the pub
+• Grade the flirting at the end of the hour`
+            },
+            {
+                type: "task",
+                content: "Task: Get his personal phone number"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "What a beautiful evening?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Umm yea, it is I guess. Its so quiet out tonight, a lil boring to be honest?"
+            },
+            {
+                type: "task",
+                content: "Task: touch the professor's arm or hand during your conversations tonight. Use this physical connection to gauge his reactions and build intimacy"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Yea, might pick up later. Besides, we're onky staying out for a couple of drinks anyway"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "True. Still...Want to play a game to make the night go a bit faster?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Alright, what type of game?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Have you ever played the Photo Challenge game?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Um, no, never heard of it"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Its simple. We both have a list and in the next hour we have to take all the pictures that are on there."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Ok, what list?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Heres the list...Your going down!"
+            },
+            {
+                type: "narrative",
+                content: "You and the professor have 1 hour to get as many pictures you can. The loser buys the next round."
+            },
+            {
+                type: "narrative",
+                content: `1hr Photo Challenge:
+•A discreet photo of your partner from an unexpected angle, like under a table or through a gap in a crowd.
+•A photo of a stranger who's wearing a similar outfit as you.
+• A photo of yourselves kissing in a corner of a room.
+• A photo of your shots/drinks.
+• A photo of your pussy/cock.
+• A traffic cone.
+• A red post box.
+• A bicycle chained to a post.
+• A broken or wobbly pavement slab.
+• A fancy lamppost.
+• A dog in clothes.
+• A drink menu with a rude cocktail name.
+• A pint with perfect foam.
+• A neon sign.
+• A bowl of peanuts or crisps.
+• A random disco ball.
+• A pub carpet (they’re always wild).
+• A mirror selfie.
+• A photo of you using the toilet.
+• A suggestive pose of your partner that hints at what's to come, like leaning for a blowjob or sex.
+• A loo with a view (window in the bathroom).
+• Someone with glitter on their face.
+• A couple arguing (from afar!).
+• A stranger with an eye-catching outfit.
+• A person carrying way too many drinks.
+• A takeaway shop queue.
+• A pigeon doing something suspicious.
+• A random teddy or doll.
+• A couple holding hands.
+• A chalk drawing on the floor.
+• A flower on the pavement.
+• A pub menu.
+• A silhouette of you and your partner in a suggestive or playful pose.
+• A photo of the others ass.`
+            },
+            {
+                type: "task",
+                content: "Task: Open and close your legs several times, seeing if he notices throughout the evening"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Wasn't too bad was it? And now we're a little more relaxed, how about we spice it up a bit?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Alright, what have you got in mind?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Have you ever played the game Would You Rather?"
+            },
+            {
+                type: "question",
+                content: "Do you think hes into you?",
+                choices: [
+                    { text: "A) Yes", popup: "ask him to go to a quiet spot and suck his cock" },
+                    { text: "B) Maybe", popup: "Be raunchy with some of these questions in the upcoming game!" }
+                ]
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "No can't say that I ever have."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "It’s easy. I ask you a question. Would you rather this or that. Like... would you rather have a beer or a whiskey"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Okay, that sounds harmless enough?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Dont worry, I'll start soft on you."
+            },
+            {
+                type: "self-thought",
+                content: "Self Thought: I need to be confident and assertive. He responds to that. I can feel his eyes on me; I just need to give him a reason to look closer"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Would you rather spend a day stuck in a boring lecture, or a night stuck in a pub... with me?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: " Haha! Well...thats an easy one. I love teaching"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "A night stuck in the pub, with you."
+            },
+            {
+                type: "narrative",
+                content: "Yellow. You try and push the boundaries of your relationship! Asking him personal questions, trying to turn the heat up a bit"
+            },
+            {
+                type: "task",
+                content: "Task: Ask each other the following Would You Rather questions. Be seductive, flirt between questions..."
+            },
+            {
+                type: "question",
+                content: "Would you rather? watch girl-on-girl porn or guy-on-guy porn to turn yourself on?",
+                choices: [
+                    { text: "A) Girl-on-girl", popup: "Slutty Slut" },
+                    { text: "B) Guy-on-guy", popup: "Gayboy!" }
+                ]
+            },
+            {
+                type: "question",
+                content: "Would you rather? Spit or Swallow ",
+                choices: [
+                    { text: "A) Swallow", popup: "Slutty Slut" },
+                    { text: "B) Spit", popup: "Vanilla!" }
+                ]
+            },
+            {
+                type: "question",
+                content: "Would you rather? Explore an adult toy shop together while pretending to be innocent first-timers or seasoned experts giving advice to others",
+                choices: [
+                    { text: "A) First timers", popup: "Shy and Innocent" },
+                    { text: "B) Experienced", popup: "Slutty slut slut!" }
+                ]
+            },
+            {
+                type: "question",
+                content: "Would you rather? Watch people having sex or be watched while you’re having sex?",
+                choices: [
+                    { text: "A) Watch", popup: "Better than porn" },
+                    { text: "B) Be watched", popup: "Sluttier!" }
+                ]
+            },
+            {
+                type: "question",
+                content: "Would you rather? Watch me masturbate or masturbate infront of me?",
+                choices: [
+                    { text: "A) Masturbate", popup: "Slllluuutttt" },
+                    { text: "B) Watch Masturbate", popup: "Perv!" }
+                ]
+            },
+            {
+                type: "self-thought",
+                content: "Self Thought: My thong is already soaked just thinking about what's to come. I hope he notices how ready I am for him, how much I want him to tear it off and fuck me raw."
+            },
+            {
+                type: "question",
+                content: "Would you rather? have your hair pulled or your nipples pinched?",
+                choices: [
+                    { text: "A) Hair pulled", popup: "A fuck handle" },
+                    { text: "B) Nipples pinched", popup: "Kinky Slut!" }
+                ]
+            },
+            {
+                type: "question",
+                content: "Would you rather?  be silenced with a gag ball OR spanked with a paddle",
+                choices: [
+                    { text: "A) Gag ball", popup: "A hole to be filled" },
+                    { text: "B) Spanked", popup: "You deserve it" }
+                ]
+            },
+            {
+                type: "question",
+                content: "Would you rather? do doggy or the cowgirl sex position?",
+                choices: [
+                    { text: "A) Doggy", popup: "Slut" },
+                    { text: "B) Cowgirl", popup: "Secret move!" }
+                ]
+            },
+            {
+                type: "self-thought",
+                content: "Self Thought: I bet he's imagining fucking me right here on the bar. The thought of him taking me roughly, not caring who sees, makes me so fucking hot."
+            },
+            {
+                type: "question",
+                content: "Would you rather? have drunk sex or stoned sex?",
+                choices: [
+                    { text: "A) Drunk", popup: "Slutty" },
+                    { text: "B) Stoned", popup: "You'll cum harder" }
+                ]
+            },
+            {
+                type: "question",
+                content: "Would you rather? Explore BDSM or tantric sex",
+                choices: [
+                    { text: "A) BDSM", popup: "...Slut" },
+                    { text: "B) Tantric", popup: "Okay...Bum-der!" }
+                ]
+            },
+            {
+                type: "question",
+                content: "Would you rather? Use a vibrator or a dildo?",
+                choices: [
+                    { text: "A) Vibrator", popup: "Mmmm squirt for me slut" },
+                    { text: "B) Dildo", popup: "Your holes need to be filled...Hard!" }
+                ]
+            },
+            {
+                type: "task",
+                content: "Task: Ask each other another 3 questions each!."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Well that esculated quickly!."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "You really dont hold back do you?."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "I thought honesty was important in your classes. Or does that only apply to essays?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Oh, you’ve definitely passed tonight. Top marks for audacity."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Top marks, huh? I should misbehave more often"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Careful, I might start expecting it."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Mmm... and what happens when your favourite student becomes your biggest distraction?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "I start making very questionable decisions."
+            },
+            {
+                type: "task",
+                content: "Task: Describe how turned on you are to him after playing that game, without using explicit words."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "I was nearly late to class today, I just couldn't sleep last night!"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Something on your mind?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Just had the same dream, over and over again"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "And what was the dream?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Dont judge me..."
+            },
+            {
+                type: "task",
+                content: "Task: Confess a naughty dream you had about him last night."
+            },
+            {
+                type: "narrative",
+                content: "Yellow. Drinks are going down very easily. No opportunities wasted tonight. Start back up in 15mins"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "It’s getting late… but not late enough to call it a night!"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "I thought you were the one who said it was boring here."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "It was. Then you loosened up."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Wanna make things a little more interesting?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Oh? Another game?."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Mmhm. Not, Would You Rather. Something with a bit more…bite."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Do I want to know what you mean by that?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "I dare you to find out"
+            },
+            {
+                type: "question",
+                content: "Is it more fun to be the tease... or the one getting teased?",
+                choices: [
+                    { text: "A) Be the tease", popup: "Hes already trying not to stare!" },
+                    { text: "B) Get teased", popup: "Lets bring the naughty side out of him" }
+                ]
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Alright. What are the rules"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "No backing out. Nothing too wild yet. Just enough to keep things...stimulating"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "You’re really committed to corrupting your teacher tonight, aren’t you?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Me? I’m just curious what you'd actually do if dared. You always seem so... controlled."
+            },
+            {
+                type: "self-thought",
+                content: "Self Thought: Is he drunk enough yet? Why can't I stop myself startong at his crotch?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Maybe that’s because no one’s ever tested me properly"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Well then. Let’s begin"
+            },
+            {
+                type: "narrative",
+                content: "The air between you both shifts. What started as innocent teasing now hums with something heavier — quiet, magnetic. Your drinks are nearly forgotten, half-full, untouched. Your knee brushes his beneath the table and this time, you don’t pull away."
+            },
+            {
+                type: "narrative",
+                content: "You flash him a slow smile — one that knows exactly what it's doing — and leans in just enough for him to catch the scent of your perfume."
+            },
+            {
+                type: "narrative",
+                content: "The game isn’t just playful anymore. It’s become a test of control. Who will crack first?"
+            },
+            {
+                type: "narrative",
+                content: "The game isn’t just playful anymore. It’s become a test of control. Who will crack first?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "I'll go first then. Make up a wild, dramatic backstory about a random person at the bar. The more outrageous, the better."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "That was an easy one Professor!"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "task",
+                content: "Task: Bite your lip lightly while listening to him, showing your interest and desire."
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "question",
+                content: "Question to yourself? How far am I willing to push my boundaries for him? Is there anything I wouldn't do if he asked?",
+                choices: [
+                    { text: "A) I'd do anything he asks. No boundaries, no limits.-", popup: "You've fantasied about thos for the last 2 years" },
+                    { text: "B) I'd push my boundaries, but I might have a few hard limits. I'll let him know what they are.", popup: "Vanilla baby!" }
+                ]
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "task",
+                content: "Task: Pretend to be cold so he has to offer his jacket or come closer"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "task",
+                content: "Task: Pretend to be texting someone else but send it to him by mistake"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "dare",
+                content: "Choose a dare for the yourself:"
+            },
+            {
+                type: "narrative",
+                content: "The dares had started light, but somewhere along the way they turned personal… then bold… then dangerous. The teasing touches. The whispered filth. The looks. The pressure."
+            },
+            {
+                type: "narrative",
+                content: "And now, you’re both pretending you aren’t thinking the same thing."
+            },
+            {
+                type: "narrative",
+                content: "Yellow!! Enjoy your evening! the game will start again as you get back to campsite"
+            },
+            {
+                type: "narrative",
+                content: "The walk from the pub is quiet but electric. The cool night air does little to cool you both down. You brushes against him now and then — not entirely by accident — and each time, neither of you speak. Just soft glances. Smirks. That buzzing silence that hums between two people who both know what they’re walking toward."
+            },
+            {
+                type: "question",
+                content: "Question: What did you want to make?",
+                choices: [
+                    { text: "A) \"Joints\"", popup: "Task: Get rolling Duuude!" },
+                    { text: "B) \"Drinks\"", popup: "Pisshead!" }
+                ]
+            },
+            {
+                type: "task",
+                content: "Task: Drink 3 drinks each."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "So Professor...I've got a confession to make. I think I'm going to let you down again!"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Why? What do you mean?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Our end of year project, mine wont be ready."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "And why is that?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "I've written all of it, thats not the issue. The issue is how the scenes sound. I'm not convinced if some of these scene are believable or realistic"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Well thays something I can help with"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Thank you so much sir!! I owe you massivley!"
+            },
+            {
+                type: "task",
+                content: "Tell him the plot of the book. Tell him its like a fifty shades of grey, but even steamier. (A tennis prodigy starts training with retired star, sparks fly — and not just on the court. He’s strict, demanding, and impossible to read. She’s defiant, flirtatious, and desperate to prove herself)"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "That sounds amazing, and I'm not usually into those types of books"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Thank you sir!."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "So what do you think?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "It sounds great, I dont know what you need my help with?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "How it starts and finishes. I dont know if the movement is natural or not"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "I think it is"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Do you know what would be great?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "What?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "How about of we reenact some of these scenes?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Umm sure, I suppose."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Your amazing Sir, thank you!"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "So in this scene Alex, the tennis coach teaches Emma about breath control, standing close, his lips almost touching hers as he demonstrates the proper technique. Inhale deeply, Emma. Feel the air fill your lungs. Now exhale slowly, he whispers, his hand on her breast, feeling her nipple harden under his touch..."
+            },
+            {
+                type: "task",
+                content: "Outside of the tent. Stand infront of the Professor, with your ass towards him. Breathe in and out with me. Grab your.professors hand and place it on your breast. He then starts to play with your nipples."
+            },
+            {
+                type: "task",
+                content: "Task: After each scene from now onwards, ask the professor for feedback. Use his suggestions to improve your technique and deepen your connection. E.g. do you think she would moan like that or would she play her asshole in this scene"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Well umm, that works for me!"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "So in this scene the tennis coach is dissapointed. He tells her that her lackluster performance in the last match was awful. A kiss to remind you of the passion and drive you need to bring to the court. It's a taste of what you could have if you impress me."
+            },
+            {
+                type: "task",
+                content: "Stand nervously before the Professor, your heart pounding. He steps close, his eyes intense and commanding. Without a word, he leans in, his lips brushing against yours, softly at first, then with growing intensity. You respond, mouth opening to welcome his tongue. Explore each other's mouths deeply, a dance of passion and control."
+            },
+            {
+                type: "question",
+                content: "Do i leave a mark on him...or make him beg for one?",
+                choices: [
+                    { text: "A) Leave a mark", popup: "A little reminder for later" },
+                    { text: "B) Make him beg", popup: "If he says please, I'll think about it!" }
+                ]
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Mmmm Professor!! That was amazing! Your hands over my body! Where did you learn to do that?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "From your mum actually"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "My mum!? WTF!?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Your mum has a massage parlour, just up the road from campus. My back often plays me up. I go visit your mum twice and month. Shes taught me a lot."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "And I mean a lot!!"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Arghh right, I forgot shes moved office. Well as long as you leave hers with a smile on your face! And how you made me feel just then. Wow!"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Well, its all for the good of the project."
+            },
+            {
+                type: "question",
+                content: "Question to yourself: Should I see if I can make him jeleous?",
+                choices: [
+                    { text: "A) \"Yes\"", popup: "Task: For no reason talk about an Ex that use to be great at tennis, maybe where you got the idea from" },
+                    { text: "B) \"No\"", popup: "I dont want to make him mad." }
+                ]
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Another scene?"
+            },
+            {
+                type: "narrative",
+                content: "You and the professor are now sat right next to each over, excited and nervous of what the next scene is. This is your chance"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "The tennis coach is trying to help her stamina. You need to learn control and endurance, Rose. This is your training for the next match. You'll suck my cock until I'm satisfied, just as you'll need to endure and please your opponent on the court."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Are you sure about this?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Absolutely Professor. You still want me to pass my project don't you?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Ofcourse I do!"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Then just relax sir. Let me take control and you can critic my performance?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "her touch hesitant at first, then growing bolder as she hears his soft groans of pleasure. She takes him into her mouth, her tongue swirling around him, learning his reactions, his likes, and his needs. His hands are in her hair, guiding her gently, his breath ragged with desire."
+            },
+            {
+                type: "task",
+                content: "Task: Take the Professors cock in your mouth and suck it, using your tongue to pleasure him. Make sure he can hear you moan."
+            },
+            {
+                type: "self-thought",
+                content: "Self Thought: His cock feels so good in my mouth. I love the way he groans when I take him deep. I want to make him cum so hard he sees stars"
+            },
+            {
+                type: "narrative",
+                content: "Yellow. Take a 10min break"
+            },
+            {
+                type: "narrative",
+                content: "The professors willingness to reenact the scenes, only makes your pussy wetter "
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "I'd rather do this, then write lines sir."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Hmm...As a punishment or a reward?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "As long as I get to swallow you whole!"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "You really have come out of your shell this year"
+            },
+            {
+                type: "narrative",
+                content: "She carries on reading from her novel"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "The tebbis coach oaces up and down the room. You need to understand your body. Knowing your limits and your pleasures will help you push through pain and discomfort during a match. This is your training in self-control and awareness."
+            },
+            {
+                type: "narrative",
+                content: "She begins to masturbate infront of her coach! Listening to his everyword whilst he watches your form."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Are you still ok with this Daddy?"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "I mean sir!"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Yes"
+            },
+            {
+                type: "task",
+                content: "Task: Lay down infront of your professor. Open your legs and edge yourself for him to see. Bonus credit given, if you use a toy on yourself"
+            },
+            {
+                type: "self-thought",
+                content: "Self Thought: I want him to taste every drop of me!"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Did you see how wet I was there?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "That was so hot! This scene doesnt need any adjustments"
+            },
+            {
+                type: "narrative",
+                content: "She carries on reading from her novel, noticing how the professor hangs on her every word"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "This will heighten your senses. You need to be able to focus intensely, blocking out distractions. It's preparation for those crucial moments in a match where everything else fades away, and it's just you and the ball"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "I've never done this before!"
+            },
+            {
+                type: "narrative",
+                content: "The tennis coach, blindfolded her and then gagged her."
+            },
+            {
+                type: "question",
+                content: "Question to yourself: Will he make me beg for it? And if he does, how long can I hold out before I'm begging on my knees?",
+                choices: [
+                    { text: "A) \"I'll beg from the start. The anticipation is too much to bear.\"", popup:"Give him what he wants" },
+                    { text: "B) \"I'll hold out as long as I can, making him work for it. The longer the wait, the sweeter the reward.\"", popup: "You won't last long slut" }
+                ]
+            },
+            {
+                type: "task",
+                content: "Task: lay back and surrender to the professor. He will blindfold you first and then gag you. All the whilst you are still masturbating"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Hows that for realistic?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "I'm convinced so far!"
+            },
+            {
+                type: "narrative",
+                content: "She continues to read the next scene."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "This is to teach you control and endurance. You need to learn how to hold back and release at the right moment, just as you do with your serves and returns on the court."
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "This sounds, this sounds like one of the best books I've read in a long time!"
+            },
+            {
+                type: "narrative",
+                content: "The tennis coach, licks his fingers and rubs her pussy. He then slowly starts to insert her, listening to her moan. He builds up the pace faster and faster, until shes about ready to explode...Then stops"
+            },
+            {
+                type: "task",
+                content: "Task: Open your legs wide. Invite the professor to finger your pussy...for academic reasons. Do not cum."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "How was that sir?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Your a good girl"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "I mean the scene? Did it come across ok? Whats your thoughts?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "I think the tennis player needs to listen to her coach more intensely. Shes eager to please, I can see her winning Wimbledon already haha"
+            },
+            {
+                type: "narrative",
+                content: "She carries on reading from her novel. The tennis coach is offering his reasons of his actions"
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "This is to teach you trust and surrender. Being tied up will force you to rely on your senses and your coach's guidance, just as you do on the court when you're focused on his instructions and not on your own movements."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "You have complete control sir..."
+            },
+            {
+                type: "narrative",
+                content: "The tennis coach, ties her up securing her wrists to the bedposts. He will ensure she is comfortable but restricted, heightening her sense of vulnerability and submission."
+            },
+            {
+                type: "question",
+                content: "Will he be rough with me? Do I want him to be rough? How much can I take before I start to beg for mercy?",
+                choices: [
+                    { text: "A) I want him to be as rough as he can be. I can take anything he gives me", popup: "Slut" },
+                    { text: "B) I want a mix of rough and gentle. Too much roughness might be overwhelming.", popup: "You'll do as your told" }
+                ]
+            },
+            {
+                type: "task",
+                content: "Task: Allow the professor to tie you up. Option to be blindfolded or gagged is up to you. Have sex with the Professor if he wants it, letting him take control and set the pace."
+            },
+            {
+                type: "dialogue",
+                speaker: "You",
+                content: "Thats only a few chapters sir. Want to read more with me?"
+            },
+            {
+                type: "dialogue",
+                speaker: "Professor",
+                content: "Its getting late. Lets go to sleep and you can meet me for afterschool detention tomorrow. Then you can read more to me"
+            },
+            {
+                type: "self-thought",
+                content: "Self Thought: I hope he wants more. I need more. I need him to use me, to fuck me until I can't walk straight. That's all I live for now!"
+
+            }
+        ];
+
+        // DOM elements
+        const contentElement = document.getElementById('content');
+        const choicesContainer = document.getElementById('choices-container');
+        const continueButton = document.getElementById('continue-btn');
+        const backButton = document.getElementById('back-btn');
+        const nextButton = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress');
+        
+        // Initialize the game
+        function initGame() {
+            gameState.steps = gameSteps;
+            gameState.currentStep = 0;
+            gameState.progress = 0;
+            updateProgressBar();
+            updateNavButtons();
+            renderCurrentStep();
+        }
+        
+        // Render current step
+        function renderCurrentStep() {
+            clearTimeout(gameState.timeoutId);
+            contentElement.innerHTML = '';
+            choicesContainer.innerHTML = '';
+            
+            const step = gameState.steps[gameState.currentStep];
+            
+            if (!step) {
+                // Game finished
+                contentElement.innerHTML = '<div class="message narrative">Congratulations! You completed the audition!</div>';
+                continueButton.style.display = 'none';
+                return;
+            }
+            
+            let messageElement;
+            
+            switch(step.type) {
+                case 'narrative':
+                case 'self-thought':
+                case 'notification':
+                case 'task':
+                    messageElement = createMessageElement(step.type, step.content);
+                    contentElement.appendChild(messageElement);
+                    continueButton.style.display = 'block';
+                    break;
+                    
+                case 'question':
+                    messageElement = createMessageElement(step.type, step.content);
+                    contentElement.appendChild(messageElement);
+                    renderChoices(step.choices);
+                    continueButton.style.display = 'none';
+                    break;
+                    
+                case 'dare':
+                    messageElement = createMessageElement('question', step.content);
+                    contentElement.appendChild(messageElement);
+                    
+                    // Generate 2 random dares
+                    const randomDares = getRandomDares(2);
+                    const dareChoices = randomDares.map(dare => ({
+                        text: dare,
+                        popup: `Your dare is to ${dare}`
+                    }));
+                    
+                    renderChoices(dareChoices);
+                    continueButton.style.display = 'none';
+                    break;
+                    
+                case 'dialogue':
+                    // Show typing indicator before message
+                    showTypingIndicator(step.speaker);
+                    
+                    // Delay before showing the message
+                    gameState.timeoutId = setTimeout(() => {
+                        removeTypingIndicator();
+                        messageElement = createMessageElement(
+                            step.speaker === 'Professor' ? 'professor' : 'you',
+                            step.content,
+                            step.speaker
+                        );
+                        contentElement.appendChild(messageElement);
+                        contentElement.scrollTop = contentElement.scrollHeight;
+                        
+                        // Move to next step after a delay
+                        gameState.timeoutId = setTimeout(() => {
+                            gameState.currentStep++;
+                            gameState.progress = (gameState.currentStep / gameState.steps.length) * 100;
+                            updateProgressBar();
+                            updateNavButtons();
+                            renderCurrentStep();
+                        }, step.speaker === 'Professor' ? 4000 : 4000);
+                    }, step.speaker === 'Professor' ? 1500 : 1000);
+                    break;
+                    
+                case 'email':
+                    messageElement = document.createElement('div');
+                    messageElement.className = 'email';
+                    messageElement.textContent = step.content;
+                    contentElement.appendChild(messageElement);
+                    continueButton.style.display = 'block';
+                    break;
+                    
+                case 'prep':
+                    messageElement = document.createElement('div');
+                    messageElement.className = 'message narrative';
+                    messageElement.innerHTML = '<h3>Preparation Tasks:</h3><div class="prep-list">' + 
+                        step.content.replace(/\n/g, '<br>').replace(/•/g, '<li>') + 
+                        '</div>';
+                    contentElement.appendChild(messageElement);
+                    continueButton.style.display = 'block';
+                    break;
+            }
+            
+            contentElement.scrollTop = contentElement.scrollHeight;
+        }
+        
+        // Get random dares from the list
+        function getRandomDares(count) {
+            const shuffled = [...dareOptions].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+        
+        // Show typing indicator
+        function showTypingIndicator(speaker) {
+            const typingIndicator = document.createElement('div');
+            typingIndicator.id = 'typing-indicator';
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            
+            if (speaker === 'Professor') {
+                typingIndicator.style.alignSelf = 'flex-start';
+            } else {
+                typingIndicator.style.alignSelf = 'flex-end';
+            }
+            
+            contentElement.appendChild(typingIndicator);
+            contentElement.scrollTop = contentElement.scrollHeight;
+        }
+        
+        // Remove typing indicator
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        // Create message element
+        function createMessageElement(type, content, speaker = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            if (speaker) {
+                const speakerSpan = document.createElement('span');
+                speakerSpan.className = 'character';
+                speakerSpan.textContent = `${speaker}:`;
+                messageDiv.appendChild(speakerSpan);
+            }
+            
+            const contentSpan = document.createElement('div');
+            contentSpan.innerHTML = content;
+            messageDiv.appendChild(contentSpan);
+            
+            return messageDiv;
+        }
+        
+        // Render choices for question steps
+        function renderChoices(choices) {
+            choicesContainer.innerHTML = '';
+            
+            choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.className = 'choice-btn';
+                button.textContent = choice.text;
+                button.addEventListener('click', () => handleChoice(choice));
+                choicesContainer.appendChild(button);
+            });
+        }
+        
+        // Handle choice selection
+        function handleChoice(choice) {
+            // Show popup message
+            const popupElement = document.createElement('div');
+            popupElement.className = 'popup';
+            popupElement.textContent = choice.popup;
+            contentElement.appendChild(popupElement);
+            contentElement.scrollTop = contentElement.scrollHeight;
+            
+            // Clear choices and show continue button
+            choicesContainer.innerHTML = '';
+            continueButton.style.display = 'block';
+        }
+        
+        // Move to next step
+        function nextStep() {
+            clearTimeout(gameState.timeoutId);
+            gameState.currentStep++;
+            gameState.progress = (gameState.currentStep / gameState.steps.length) * 100;
+            updateProgressBar();
+            updateNavButtons();
+            renderCurrentStep();
+        }
+        
+        // Move to previous step
+        function prevStep() {
+            clearTimeout(gameState.timeoutId);
+            if (gameState.currentStep > 0) {
+                gameState.currentStep--;
+                gameState.progress = (gameState.currentStep / gameState.steps.length) * 100;
+                updateProgressBar();
+                updateNavButtons();
+                renderCurrentStep();
+            }
+        }
+        
+        // Update progress bar
+        function updateProgressBar() {
+            progressBar.style.width = `${gameState.progress}%`;
+        }
+        
+        // Update navigation button states
+        function updateNavButtons() {
+            backButton.disabled = gameState.currentStep === 0;
+            nextButton.disabled = gameState.currentStep >= gameState.steps.length - 1;
+        }
+        
+        // Event listeners
+        continueButton.addEventListener('click', nextStep);
+        backButton.addEventListener('click', prevStep);
+        nextButton.addEventListener('click', nextStep);
+        
+        // Start the game
+        initGame();
+    </script>
+</body>
+</html>
